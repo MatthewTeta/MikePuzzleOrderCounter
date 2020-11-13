@@ -17,6 +17,20 @@ app.post('/increment', (req, res) => {
     .catch(err => res.status(504).send(err))
 })
 
+app.post('/decrement', (req, res) => {
+    console.log("increment")
+    GPIO.decrement()
+    .then(count => res.send(count.toString()))
+    .catch(err => res.status(504).send(err))
+})
+
+app.post('/set', (req, res) => {
+    console.log("increment")
+    GPIO.set(req.body.count || 0)
+    .then(count => res.send(count.toString()))
+    .catch(err => res.status(504).send(err))
+})
+
 // Start server
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

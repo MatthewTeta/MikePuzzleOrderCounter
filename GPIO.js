@@ -7,9 +7,9 @@ const downPin = new io(process.env.DOWN_PIN)
 const wait = (ms) => {
     return new Promise((resolve, reject) => {
         var start = Date.now(),
-            now = start;
+        now = start;
         while (now - start < ms) {
-          now = Date.now();
+            now = Date.now();
         }
         resolve(true)
     })
@@ -23,10 +23,19 @@ const pinOff = (pin) => {
     pin.writeSync(0);
 }
 
-const pulsePin = (pin) => {
+const pulsePin = (pin) => new Promise((resolve, reject) => {
     pinOn(upPin)
     wait(process.env.PULSE_MS)
-    .then(s => pinOff()).catch(e => console.log(err))
+    .then(success => {
+        pinOff()
+        resolve(success)
+    }).catch(err => reject(err))
+})
+
+const pulsePinNTimes = (pin, N) => {
+    var promise = Promise.resolve()
+    while (N-- > 0) promise = promise.then(() => pulsePin(pin));
+    return promise;
 }
 
 module.exports = {
@@ -35,6 +44,40 @@ module.exports = {
         .then(count => {
             // Update display by pulsing GPIO
             pulsePin(upPin)
+            resolve(true)
         }).catch(err => reject(err))
+    }),
+    
+    decrement: () => new Promise((resolve, reject) => {
+        countFile.decrement()
+        .then(count => {
+            // Update display by pulsing GPIO
+            pulsePin(downPin)
+            resolve(true)
+        }).catch(err => reject(err))
+    }),
+    
+    set: (count) => new Promise((resolve, reject) => {
+        countFile.read()
+        .then(oldCount => {
+            countFile.set(count)
+            .then(count => {
+                // Update display by pulsing GPIO
+                let countDiff = count - oldCount
+                if (countDiff > 0) {
+                    // inc countDiff times
+                    pulsePinNTimes(upPin, countDiff)
+                    .then(success => resolve(success))
+                    .catch(err => reject(err))
+                } else {
+                    // dec countDiff times
+                    pulsePinNTimes(downPin, countDiff)
+                    .then(success => resolve(success))
+                    .catch(err => reject(err))
+                }
+                resolve(true)
+            }).catch(err => reject(err))
+        })
+        .catch(err => reject(err))
     })
 }
