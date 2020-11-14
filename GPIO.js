@@ -1,8 +1,8 @@
 var io = require('onoff').Gpio;
 const countFile = require('./countFile')
 
-const upPin = new io(process.env.UP_PIN)
-const downPin = new io(process.env.DOWN_PIN)
+const upPin = new io(process.env.UP_PIN, 'out', { activeLow: true })
+const downPin = new io(process.env.DOWN_PIN, 'out', { activeLow: true })
 
 const wait = (ms) => {
     return new Promise((resolve, reject) => {
@@ -16,18 +16,18 @@ const wait = (ms) => {
 }
 
 const pinOn = (pin) => {
-    pin.writeSync(0);
+    pin.writeSync(1)
 }
 
 const pinOff = (pin) => {
-    pin.writeSync(1);
+    pin.writeSync(0)
 }
 
 const pulsePin = (pin) => new Promise((resolve, reject) => {
-    pinOn(upPin)
+    pinOn(pin)
     wait(process.env.PULSE_MS)
     .then(success => {
-        pinOff()
+        pinOff(pin)
         resolve(success)
     }).catch(err => reject(err))
 })
@@ -40,9 +40,11 @@ const pulsePinNTimes = (pin, N) => {
 
 module.exports = {
     init: () => {
+        // upPin.setActiveLow(true)
+        // downPin.setActiveLow(true)
         pinOff(upPin)
         pinOff(downPin)
-    }
+    },
 
     increment: () => new Promise((resolve, reject) => {
         countFile.increment()

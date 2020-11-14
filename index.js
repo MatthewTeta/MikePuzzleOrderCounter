@@ -10,6 +10,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(cors())
 
+GPIO.init()
+
 app.post('/increment', (req, res) => {
     console.log("increment")
     GPIO.increment()
@@ -18,14 +20,14 @@ app.post('/increment', (req, res) => {
 })
 
 app.post('/decrement', (req, res) => {
-    console.log("increment")
+    console.log("decrement")
     GPIO.decrement()
     .then(count => res.send(count.toString()))
     .catch(err => res.status(504).send(err))
 })
 
 app.post('/set', (req, res) => {
-    console.log("increment")
+    console.log("set")
     GPIO.set(req.body.count || 0)
     .then(count => res.send(count.toString()))
     .catch(err => res.status(504).send(err))
