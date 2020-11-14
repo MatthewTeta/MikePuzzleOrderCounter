@@ -1,0 +1,26 @@
+
+> mikepuzzleordercounter@1.0.0 test /home/pi/MikePuzzleOrderCounter
+> nodemon index.js
+
+[33m[nodemon] 2.0.6[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node index.js`[39m
+Server listening on port 5000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node index.js`[39m
+Server listening on port 5000
+
+> mikepuzzleordercounter@1.0.0 start /home/pi/MikePuzzleOrderCounter
+> node index.js
+
+Server listening on port 5000
+
+> mikepuzzleordercounter@1.0.0 start /home/pi/MikePuzzleOrderCounter
+> node index.js
+
+Server listening on port 5000
+decrement
+increment
+increment
