@@ -16,11 +16,11 @@ const wait = (ms) => {
 }
 
 const pinOn = (pin) => {
-    pin.writeSync(1);
+    pin.writeSync(0);
 }
 
 const pinOff = (pin) => {
-    pin.writeSync(0);
+    pin.writeSync(1);
 }
 
 const pulsePin = (pin) => new Promise((resolve, reject) => {
@@ -39,6 +39,11 @@ const pulsePinNTimes = (pin, N) => {
 }
 
 module.exports = {
+    init: () => {
+        pinOff(upPin)
+        pinOff(downPin)
+    }
+
     increment: () => new Promise((resolve, reject) => {
         countFile.increment()
         .then(count => {
